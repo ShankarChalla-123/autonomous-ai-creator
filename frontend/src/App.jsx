@@ -6,10 +6,10 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || "")
   .replace(/\/+$/, "");
 
 const PIPELINE_STEPS = [
-  { label: "Analyze", meta: "analyze", desc: "Understand the user's goal." },
-  { label: "Plan", meta: "plan", desc: "Create the best content strategy." },
-  { label: "Create", meta: "create", desc: "Generate the required content." },
-  { label: "Review", meta: "review", desc: "Check and improve the output." },
+  { label: "Analyze", verb: "Analyzing", meta: "analyze", desc: "Understand the user's goal." },
+  { label: "Plan", verb: "Planning", meta: "plan", desc: "Create the best content strategy." },
+  { label: "Create", verb: "Creating", meta: "create", desc: "Generate the required content." },
+  { label: "Review", verb: "Reviewing", meta: "review", desc: "Check and improve the output." },
 ];
 
 const AGENTS = [
@@ -314,7 +314,7 @@ function App() {
 
   const stageName = PIPELINE_STEPS.find((s) => steps[s.meta] === "loading");
   const buttonLabel = stageName
-    ? `${stageName.label}ing...`
+    ? `${stageName.verb}...`
     : "Generate Content →";
 
   const renderAgentCard = (agent) => {
