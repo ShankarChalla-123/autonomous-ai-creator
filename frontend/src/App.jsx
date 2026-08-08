@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Sun, Moon } from "lucide-react";
 import "./App.css";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "")
@@ -64,6 +65,18 @@ function App() {
   const [steps, setSteps] = useState(IDLE_STEPS);
   const [data, setData] = useState(null);
   const [copied, setCopied] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   const setStep = (meta, state) => {
     setSteps((prev) => ({ ...prev, [meta]: state }));
@@ -390,6 +403,14 @@ function App() {
           <span className="status-dot"></span>
           System Online
         </div>
+
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+        >
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
       </header>
 
       <main className="main-content">
