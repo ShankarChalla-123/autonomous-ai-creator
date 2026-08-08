@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: autonomous-ai-creator
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
