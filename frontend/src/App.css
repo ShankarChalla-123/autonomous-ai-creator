@@ -195,10 +195,16 @@ button:disabled {
   color: white;
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .nav-status {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: var(--color-text-nav);
   font-size: 14px;
 }
