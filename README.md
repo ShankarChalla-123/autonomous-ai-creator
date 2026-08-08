@@ -1,16 +1,56 @@
-# React + Vite
+# 🤖 Autonomous AI Creator
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Autonomous AI Creator is an AI-powered content creation system that takes a user's idea and turns it into structured, publish-ready content.
 
-Currently, two official plugins are available:
+Instead of relying on a single AI prompt, the system uses multiple specialized agents. Each agent handles a different stage of the workflow: understanding the idea, planning the content, creating it, and reviewing the final result.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 💡 Enter a content idea through the web interface
+- 🧠 Analyze Agent understands the idea and its requirements
+- 📋 Planning Agent creates a structured content plan
+- ✍️ Creation Agent generates the requested content
+- 🔍 Review Agent checks and improves the generated content
+- 🤖 Google Gemini API for AI-powered generation
+- ⚡ FastAPI backend for processing requests
+- 🎨 React frontend for user interaction
+- 🔄 Multi-agent autonomous workflow
+- 🌐 REST API communication between frontend and backend
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🔄 Autonomous AI Workflow
+
+The system processes each idea through four specialized stages:
+
+```text
+User Idea
+    │
+    ▼
+┌─────────────────┐
+│  Analyze Agent  │
+│ Understand Idea │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Planning Agent  │
+│ Create Strategy │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Creation Agent  │
+│ Generate Content│
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Review Agent  │
+│ Check & Improve │
+└────────┬────────┘
+         │
+         ▼
+    Final Content
