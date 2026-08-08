@@ -573,12 +573,6 @@ function App() {
                 <p>{steps[step.meta] === "loading" ? "Working..." : step.desc}</p>
               </div>
             ))}
-
-            {PIPELINE_STEPS.map((step, index) => (
-              index < PIPELINE_STEPS.length - 1 && (
-                <div className="line" key={`line-${step.meta}`} />
-              )
-            ))}
           </div>
         </section>
 
