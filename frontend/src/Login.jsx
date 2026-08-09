@@ -15,6 +15,10 @@ export default function Login({ onSwitchToRegister }) {
     try {
       await login(email, password);
     } catch (err) {
+      console.error("[auth] Login failed", {
+        status: err.status,
+        message: err.message,
+      });
       setError(err.message || "Login failed.");
     } finally {
       setBusy(false);

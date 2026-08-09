@@ -14,3 +14,22 @@ export function authHeaders() {
   const token = getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
+
+export async function parseJson(res) {
+  let text = "";
+  try {
+    text = await res.text();
+  } catch {
+    text = "";
+  }
+
+  if (!text.trim()) {
+    return { status: res.status, ok: res.ok, data: null, text };
+  }
+
+  try {
+    return { status: res.status, ok: res.ok, data: JSON.parse(text), text };
+  } catch {
+    return { status: res.status, ok: res.ok, data: null, text };
+  }
+}
