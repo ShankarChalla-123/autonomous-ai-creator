@@ -17,6 +17,17 @@ from pydantic import BaseModel, Field, ValidationError, field_validator
 from google import genai
 from google.genai import types
 
+from auth import (
+    LoginRequest,
+    RegisterRequest,
+    create_access_token,
+    create_user,
+    get_current_user,
+    get_user_by_email,
+    init_db,
+    verify_password,
+)
+
 
 # ==========================================
 # LOAD ENVIRONMENT
@@ -61,6 +72,8 @@ client = genai.Client(
 # ==========================================
 
 app = FastAPI(title="Autonomous AI Creator")
+
+init_db()
 
 app.add_middleware(
     CORSMiddleware,
@@ -230,6 +243,61 @@ def root():
 def health():
     return {
         "status": "healthy"
+    }
+
+
+# ==========================================
+# AUTHENTICATION
+# ==========================================
+
+def _auth_response(user):
+    return {
+        "success": True,
+        "access_token": create_access_token(user["email"]),
+        "token_type": "bearer",
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "created_at": user["created_at"],
+        },
+    }
+
+
+@app.post("/auth/register", dependencies=[Depends(enforce_rate_limit)])
+def register(request: RegisterRequest):
+    email = request.email.lower()
+    if get_user_by_email(email):
+        raise HTTPException(
+            status_code=409,
+            detail="An account with that email already exists.",
+        )
+    user = create_user(email, request.password)
+    logger.info("New user registered: %s", email)
+    return _auth_response(user)
+
+
+@app.post("/auth/login", dependencies=[Depends(enforce_rate_limit)])
+def login(request: LoginRequest):
+    email = request.email.lower()
+    user = get_user_by_email(email)
+    if user is None or not verify_password(request.password, user["password_hash"]):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password.",
+        )
+    logger.info("User logged in: %s", email)
+    return _auth_response(user)
+
+
+@app.get("/auth/me")
+def auth_me(current_user=Depends(get_current_user)):
+    return {
+        "success": True,
+        "user": {
+            "id": current_user["id"],
+            "email": current_user["email"],
+            "created_at": current_user["created_at"],
+        },
     }
 
 
@@ -646,7 +714,10 @@ def sse_event(data):
 # STREAMING GENERATE ENDPOINT
 # ==========================================
 
-@app.post("/generate-stream", dependencies=[Depends(enforce_rate_limit)])
+@app.post(
+    "/generate-stream",
+    dependencies=[Depends(enforce_rate_limit), Depends(get_current_user)],
+)
 def generate_content_stream(request: CreationRequest):
 
     idea = request.idea.strip()
@@ -704,7 +775,10 @@ def generate_content_stream(request: CreationRequest):
 # GENERATE CONTENT (non-streaming endpoint)
 # ==========================================
 
-@app.post("/generate", dependencies=[Depends(enforce_rate_limit)])
+@app.post(
+    "/generate",
+    dependencies=[Depends(enforce_rate_limit), Depends(get_current_user)],
+)
 def generate_content(request: CreationRequest):
 
     idea = request.idea.strip()

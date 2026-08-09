@@ -3,3 +3,7 @@ uvicorn[standard]>=0.52.0
 python-dotenv>=1.2.0
 google-genai>=2.17.0
 pydantic>=2.13.0
+pwdlib>=0.3.0
+bcrypt>=5.0.0
+PyJWT>=2.13.0
+email-validator>=2.2.0

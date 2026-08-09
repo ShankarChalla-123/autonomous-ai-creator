@@ -48,7 +48,7 @@ def reset_rate_limiter():
 
 
 @pytest.fixture
-def client(monkeypatch):
+def client(monkeypatch, auth_headers):
     def fake_analyze_plan(idea):
         return AnalyzePlanOutput.model_validate_json(
             json.dumps(SAMPLE_ANALYZE_PLAN)
@@ -61,7 +61,7 @@ def client(monkeypatch):
 
     monkeypatch.setattr(main, "generate_analyze_plan", fake_analyze_plan)
     monkeypatch.setattr(main, "generate_create_review", fake_create_review)
-    return TestClient(main.app)
+    return TestClient(main.app, headers=auth_headers)
 
 
 def _read_sse_stages(body):

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, LogOut } from "lucide-react";
+import { API_BASE, authHeaders } from "./api.js";
+import { AuthProvider, useAuth } from "./AuthContext.jsx";
+import Login from "./Login.jsx";
+import Register from "./Register.jsx";
 import "./App.css";
-
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || "")
-  .replace(/\/+$/, "");
 
 const PIPELINE_STEPS = [
   { label: "Analyze", verb: "Analyzing", meta: "analyze", desc: "Understand the user's goal." },
@@ -59,12 +60,6 @@ function Spinner() {
 }
 
 function App() {
-  const [idea, setIdea] = useState("");
-  const [status, setStatus] = useState("Ready");
-  const [loading, setLoading] = useState(false);
-  const [steps, setSteps] = useState(IDLE_STEPS);
-  const [data, setData] = useState(null);
-  const [copied, setCopied] = useState(null);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "dark";
   });
@@ -77,6 +72,75 @@ function App() {
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
+
+  return (
+    <AuthProvider>
+      <AuthGate theme={theme} toggleTheme={toggleTheme} />
+    </AuthProvider>
+  );
+}
+
+function AuthGate({ theme, toggleTheme }) {
+  const { user, checking } = useAuth();
+  const [mode, setMode] = useState("login");
+
+  if (checking) {
+    return (
+      <div className="app">
+        <AuthShell theme={theme} toggleTheme={toggleTheme}>
+          <div className="auth-loading">
+            <Spinner />
+            <span>Checking your session…</span>
+          </div>
+        </AuthShell>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="app">
+        <AuthShell theme={theme} toggleTheme={toggleTheme}>
+          {mode === "login" ? (
+            <Login onSwitchToRegister={() => setMode("register")} />
+          ) : (
+            <Register onSwitchToLogin={() => setMode("login")} />
+          )}
+        </AuthShell>
+      </div>
+    );
+  }
+
+  return <CreatorApp theme={theme} toggleTheme={toggleTheme} />;
+}
+
+function AuthShell({ children }) {
+  return (
+    <div className="auth-shell">
+      <div className="auth-hero">
+        <div className="auth-brand">
+          <span className="brand-icon">✦</span>
+          <span>Autonomous AI Creator</span>
+        </div>
+        <p className="auth-tagline">
+          Analyze. Plan. Create. Review.
+          <br />
+          Let the AI agents do the work.
+        </p>
+      </div>
+      <div className="auth-card">{children}</div>
+    </div>
+  );
+}
+
+function CreatorApp({ theme, toggleTheme }) {
+  const { user, logout } = useAuth();
+  const [idea, setIdea] = useState("");
+  const [status, setStatus] = useState("Ready");
+  const [loading, setLoading] = useState(false);
+  const [steps, setSteps] = useState(IDLE_STEPS);
+  const [data, setData] = useState(null);
+  const [copied, setCopied] = useState(null);
 
   const setStep = (meta, state) => {
     setSteps((prev) => ({ ...prev, [meta]: state }));
@@ -218,7 +282,7 @@ function App() {
   const runStream = async (body) => {
     const response = await fetch(`${API_BASE}/generate-stream`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify(body),
     });
 
@@ -258,7 +322,7 @@ function App() {
   const runLegacy = async (body) => {
     const response = await fetch(`${API_BASE}/generate`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify(body),
     });
     const json = await response.json();
@@ -403,6 +467,21 @@ function App() {
           <div className="nav-status">
             <span className="status-dot"></span>
             System Online
+          </div>
+
+          <div className="user-chip" title={user?.email}>
+            <span className="user-avatar">
+              {(user?.email || "?").charAt(0).toUpperCase()}
+            </span>
+            <span className="user-email">{user?.email}</span>
+            <button
+              className="logout-btn"
+              onClick={logout}
+              aria-label="Log out"
+              title="Log out"
+            >
+              <LogOut size={16} />
+            </button>
           </div>
 
           <button

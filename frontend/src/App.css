@@ -922,10 +922,230 @@ button:hover:not(:disabled) {
 }
 
 /* =============================================
+   USER CHIP / LOGOUT
+   ============================================= */
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 5px;
+  border: 1px solid var(--color-toggle-border);
+  border-radius: 30px;
+  background: var(--color-toggle-bg);
+  max-width: 240px;
+}
+
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.user-email {
+  color: var(--color-text-nav);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover:not(:disabled) {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+}
+
+/* =============================================
+   AUTH SCREEN
+   ============================================= */
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px 6%;
+}
+
+.auth-hero {
+  max-width: 400px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.auth-tagline {
+  margin-top: 24px;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  padding: 34px;
+  border: 1px solid var(--color-border-card);
+  border-radius: 20px;
+  background: var(--color-bg-card);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .auth-card {
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+}
+
+.auth-form h2 {
+  font-size: 24px;
+  color: var(--color-text);
+}
+
+.auth-sub {
+  margin: 8px 0 24px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.auth-form label span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 12px;
+  outline: none;
+  background: var(--color-bg-input);
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: var(--color-border-focus);
+}
+
+.auth-error {
+  margin-bottom: 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-red-border);
+  border-radius: 10px;
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 13px 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-accent);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.auth-switch {
+  margin-top: 20px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.auth-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 
 @media (max-width: 750px) {
+  .auth-shell {
+    flex-direction: column;
+    gap: 32px;
+    padding: 30px 5%;
+  }
+
+  .auth-hero {
+    text-align: center;
+  }
+
+  .user-chip {
+    max-width: 150px;
+  }
+
+  .user-email {
+    display: none;
+  }
+
   .navbar {
     padding: 0 5%;
   }
